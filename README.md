@@ -34,8 +34,8 @@ MAST Research Project/
 - **Response Tracking**: Captures latency, status, and metadata for each model response
 
 **Supported Models**:
-- **GPT-4o** (OpenAI)
-- **Claude 3.5 Sonnet** (Anthropic)
+- **Llama 3.3 70B** (Groq)
+- **Mixtral 8x7B** (Groq)
 - **Gemini 1.5 Pro** (Google)
 
 **Architecture**:
@@ -62,7 +62,7 @@ python Phase1.py
 ### Prerequisites
 
 - Python 3.8 or higher
-- API keys for OpenAI, Anthropic, and Google (Gemini)
+- API keys for Groq and Google (Gemini)
 
 ### Setup
 
@@ -80,8 +80,7 @@ pip install -r requirements.txt
 3. Configure API keys:
 Create a `.env` file in the `Complete Phases/` directory with the following content:
 ```env
-OPENAI_API_KEY=your_openai_api_key_here
-ANTHROPIC_API_KEY=your_anthropic_api_key_here
+GROQ_API_KEY=your_groq_api_key_here
 GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
@@ -103,19 +102,12 @@ Additional dependencies for future phases:
 
 ## API Key Setup
 
-### OpenAI API Key
-1. Go to [platform.openai.com](https://platform.openai.com)
+### Groq API Key
+1. Go to [console.groq.com](https://console.groq.com)
 2. Sign up or log in
 3. Navigate to API Keys section
 4. Create a new API key
-5. Add to `.env` file as `OPENAI_API_KEY`
-
-### Anthropic API Key
-1. Go to [console.anthropic.com](https://console.anthropic.com)
-2. Sign up or log in
-3. Navigate to API Keys section
-4. Create a new API key
-5. Add to `.env` file as `ANTHROPIC_API_KEY`
+5. Add to `.env` file as `GROQ_API_KEY`
 
 ### Google Gemini API Key
 1. Go to [makersuite.google.com](https://makersuite.google.com)
@@ -148,20 +140,20 @@ User Prompt: Explain the history of the internet in 3 paragraphs.
 ============================================================
 
 ────────────────────────────────────────────────────────────────
-Model 1: OPENAI - gpt-4o
+Model 1: GROQ - llama-3.3-70b-versatile
 ────────────────────────────────────────────────────────────────
 Status: success
-Latency: 2.34s
+Latency: 0.45s
 
-Response: [GPT-4o's response here]
+Response: [Llama 3.3's response here]
 
 ────────────────────────────────────────────────────────────────
-Model 2: ANTHROPIC - claude-3-5-sonnet-20241022
+Model 2: GROQ - mixtral-8x7b-32768
 ────────────────────────────────────────────────────────────────
 Status: success
-Latency: 1.89s
+Latency: 0.52s
 
-Response: [Claude's response here]
+Response: [Mixtral's response here]
 
 ────────────────────────────────────────────────────────────────
 Model 3: GEMINI - gemini-1.5-pro
@@ -175,7 +167,7 @@ Response: [Gemini's response here]
 SUMMARY
 ============================================================
 Successful: 3/3
-Average Latency: 2.30s
+Average Latency: 1.21s
 ============================================================
 ```
 

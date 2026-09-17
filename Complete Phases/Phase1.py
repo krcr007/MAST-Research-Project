@@ -5,8 +5,8 @@ This module implements parallel API routing to multiple LLM models using asyncio
 It takes a user prompt and simultaneously queries multiple models to generate raw text outputs.
 
 Models Supported:
-- GPT-4o (via OpenAI API)
-- Claude 3.5 Sonnet (via Anthropic API)
+- Llama 3.3 70B (via Groq API)
+- Mixtral 8x7B (via Groq API)
 - Gemini 1.5 Pro (via Google API)
 """
 
@@ -42,8 +42,7 @@ load_dotenv(env_path)
 # 2. Read API keys
 # ==========================================
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 
@@ -58,13 +57,8 @@ print("=" * 60)
 print(f".env path: {env_path}")
 
 print(
-    "OpenAI API Key:",
-    "FOUND" if OPENAI_API_KEY else "NOT FOUND"
-)
-
-print(
-    "Anthropic API Key:",
-    "FOUND" if ANTHROPIC_API_KEY else "NOT FOUND"
+    "Groq API Key:",
+    "FOUND" if GROQ_API_KEY else "NOT FOUND"
 )
 
 print(
@@ -75,7 +69,7 @@ print(
 print("=" * 60)
 
 
-if not OPENAI_API_KEY or not ANTHROPIC_API_KEY or not GEMINI_API_KEY:
+if not GROQ_API_KEY or not GEMINI_API_KEY:
     print("❌ One or more API keys are missing.")
     sys.exit(1)
 
@@ -111,14 +105,14 @@ class ModelConfig:
 
 MODEL_CONFIGS: List[ModelConfig] = [
     ModelConfig(
-        provider="openai",
-        model="gpt-4o",
-        api_key_env_var="OPENAI_API_KEY"
+        provider="groq",
+        model="llama-3.3-70b-versatile",
+        api_key_env_var="GROQ_API_KEY"
     ),
     ModelConfig(
-        provider="anthropic",
-        model="claude-3-5-sonnet-20241022",
-        api_key_env_var="ANTHROPIC_API_KEY"
+        provider="groq",
+        model="mixtral-8x7b-32768",
+        api_key_env_var="GROQ_API_KEY"
     ),
     ModelConfig(
         provider="gemini",
