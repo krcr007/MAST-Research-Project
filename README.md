@@ -34,8 +34,7 @@ MAST Research Project/
 - **Response Tracking**: Captures latency, status, and metadata for each model response
 
 **Supported Models**:
-- **Llama 3.3 70B** (Groq)
-- **Mixtral 8x7B** (Groq)
+- **Qwen 2.5 32B** (Groq)
 - **Gemini 1.5 Pro** (Google)
 
 **Architecture**:
@@ -140,23 +139,15 @@ User Prompt: Explain the history of the internet in 3 paragraphs.
 ============================================================
 
 ────────────────────────────────────────────────────────────────
-Model 1: GROQ - llama-3.3-70b-versatile
+Model 1: GROQ - qwen/qwen-2.5-32b
 ────────────────────────────────────────────────────────────────
 Status: success
-Latency: 0.45s
+Latency: 0.38s
 
-Response: [Llama 3.3's response here]
-
-────────────────────────────────────────────────────────────────
-Model 2: GROQ - mixtral-8x7b-32768
-────────────────────────────────────────────────────────────────
-Status: success
-Latency: 0.52s
-
-Response: [Mixtral's response here]
+Response: [Qwen's response here]
 
 ────────────────────────────────────────────────────────────────
-Model 3: GEMINI - gemini-1.5-pro
+Model 2: GEMINI - gemini-1.5-pro
 ────────────────────────────────────────────────────────────────
 Status: success
 Latency: 2.67s
@@ -166,8 +157,8 @@ Response: [Gemini's response here]
 ============================================================
 SUMMARY
 ============================================================
-Successful: 3/3
-Average Latency: 1.21s
+Successful: 2/2
+Average Latency: 1.53s
 ============================================================
 ```
 

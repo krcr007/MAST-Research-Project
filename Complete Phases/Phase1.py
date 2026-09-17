@@ -5,8 +5,7 @@ This module implements parallel API routing to multiple LLM models using asyncio
 It takes a user prompt and simultaneously queries multiple models to generate raw text outputs.
 
 Models Supported:
-- Llama 3.3 70B (via Groq API)
-- Mixtral 8x7B (via Groq API)
+- Qwen 2.5 32B (via Groq API)
 - Gemini 1.5 Pro (via Google API)
 """
 
@@ -106,12 +105,7 @@ class ModelConfig:
 MODEL_CONFIGS: List[ModelConfig] = [
     ModelConfig(
         provider="groq",
-        model="llama-3.3-70b-versatile",
-        api_key_env_var="GROQ_API_KEY"
-    ),
-    ModelConfig(
-        provider="groq",
-        model="mixtral-8x7b-32768",
+        model="qwen/qwen-2.5-32b",
         api_key_env_var="GROQ_API_KEY"
     ),
     ModelConfig(
