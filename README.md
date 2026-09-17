@@ -34,8 +34,8 @@ MAST Research Project/
 - **Response Tracking**: Captures latency, status, and metadata for each model response
 
 **Supported Models**:
-- **Qwen 2.5 32B** (Groq)
-- **Gemini 1.5 Pro** (Google)
+- **Qwen 2.5 72B Instruct** (Hugging Face Inference API)
+- **Llama 3.1 70B** (Hugging Face Inference API)
 
 **Architecture**:
 ```
@@ -61,7 +61,7 @@ python Phase1.py
 ### Prerequisites
 
 - Python 3.8 or higher
-- API keys for Groq and Google (Gemini)
+- Hugging Face API key
 
 ### Setup
 
@@ -79,8 +79,7 @@ pip install -r requirements.txt
 3. Configure API keys:
 Create a `.env` file in the `Complete Phases/` directory with the following content:
 ```env
-GROQ_API_KEY=your_groq_api_key_here
-GEMINI_API_KEY=your_gemini_api_key_here
+HF_API_KEY=your_huggingface_api_key_here
 ```
 
 **Note**: The `.env` file is already in `.gitignore` to prevent accidental commits of sensitive data.
@@ -101,19 +100,12 @@ Additional dependencies for future phases:
 
 ## API Key Setup
 
-### Groq API Key
-1. Go to [console.groq.com](https://console.groq.com)
+### Hugging Face API Key
+1. Go to [huggingface.co](https://huggingface.co)
 2. Sign up or log in
-3. Navigate to API Keys section
-4. Create a new API key
-5. Add to `.env` file as `GROQ_API_KEY`
-
-### Google Gemini API Key
-1. Go to [makersuite.google.com](https://makersuite.google.com)
-2. Sign up or log in
-3. Navigate to API Keys section
-4. Create a new API key
-5. Add to `.env` file as `GEMINI_API_KEY`
+3. Navigate to Settings → Access Tokens
+4. Create a new access token
+5. Add to `.env` file as `HF_API_KEY`
 
 ## Running Phase 1
 
@@ -139,26 +131,26 @@ User Prompt: Explain the history of the internet in 3 paragraphs.
 ============================================================
 
 ────────────────────────────────────────────────────────────────
-Model 1: GROQ - qwen/qwen-2.5-32b
+Model 1: HUGGINGFACE - huggingface/Qwen/Qwen2.5-72B-Instruct
 ────────────────────────────────────────────────────────────────
 Status: success
-Latency: 0.38s
+Latency: 1.25s
 
 Response: [Qwen's response here]
 
 ────────────────────────────────────────────────────────────────
-Model 2: GEMINI - gemini-1.5-pro
+Model 2: HUGGINGFACE - huggingface/meta-llama/Meta-Llama-3.1-70B-Instruct
 ────────────────────────────────────────────────────────────────
 Status: success
-Latency: 2.67s
+Latency: 1.52s
 
-Response: [Gemini's response here]
+Response: [Llama's response here]
 
 ============================================================
 SUMMARY
 ============================================================
 Successful: 2/2
-Average Latency: 1.53s
+Average Latency: 1.39s
 ============================================================
 ```
 

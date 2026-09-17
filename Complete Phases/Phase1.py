@@ -5,8 +5,8 @@ This module implements parallel API routing to multiple LLM models using asyncio
 It takes a user prompt and simultaneously queries multiple models to generate raw text outputs.
 
 Models Supported:
-- Qwen 2.5 32B (via Groq API)
-- Gemini 1.5 Pro (via Google API)
+- Qwen 2.5 72B Instruct (via Hugging Face Inference API)
+- Llama 3.1 70B (via Hugging Face Inference API)
 """
 
 import os
@@ -41,8 +41,8 @@ load_dotenv(env_path)
 # 2. Read API keys
 # ==========================================
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+HF_API_KEY = os.getenv("HF_API_KEY")
+LITELLM_API_BASE = os.getenv("LITELLM_API_BASE", "http://localhost:4000")
 
 
 # ==========================================
@@ -56,19 +56,19 @@ print("=" * 60)
 print(f".env path: {env_path}")
 
 print(
-    "Groq API Key:",
-    "FOUND" if GROQ_API_KEY else "NOT FOUND"
+    "Hugging Face API Key:",
+    "FOUND" if HF_API_KEY else "NOT FOUND"
 )
 
 print(
-    "Gemini API Key:",
-    "FOUND" if GEMINI_API_KEY else "NOT FOUND"
+    "LiteLLM API Base:",
+    LITELLM_API_BASE
 )
 
 print("=" * 60)
 
 
-if not GROQ_API_KEY or not GEMINI_API_KEY:
+if not HF_API_KEY:
     print("❌ One or more API keys are missing.")
     sys.exit(1)
 
@@ -104,14 +104,14 @@ class ModelConfig:
 
 MODEL_CONFIGS: List[ModelConfig] = [
     ModelConfig(
-        provider="groq",
-        model="qwen/qwen-2.5-32b",
-        api_key_env_var="GROQ_API_KEY"
+        provider="huggingface",
+        model="huggingface/Qwen/Qwen2.5-72B-Instruct",
+        api_key_env_var="HF_API_KEY"
     ),
     ModelConfig(
-        provider="gemini",
-        model="gemini-1.5-pro",
-        api_key_env_var="GEMINI_API_KEY"
+        provider="huggingface",
+        model="huggingface/meta-llama/Meta-Llama-3.1-70B-Instruct",
+        api_key_env_var="HF_API_KEY"
     ),
 ]
 
@@ -147,12 +147,20 @@ async def query_single_model(
         os.environ[model_config.api_key_env_var] = os.getenv(model_config.api_key_env_var)
         
         # Make async completion call using LiteLLM
-        response = await acompletion(
-            model=model_config.model,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=temperature,
-            max_tokens=max_tokens,
-        )
+        # For local LiteLLM proxy, use the configured api_base
+        completion_params = {
+            "model": model_config.model,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+        }
+        
+        # Add api_base if configured (for local LiteLLM proxy)
+        # Only use api_base if it's not localhost (to use direct API calls)
+        if LITELLM_API_BASE and not LITELLM_API_BASE.startswith("http://localhost"):
+            completion_params["api_base"] = LITELLM_API_BASE
+        
+        response = await acompletion(**completion_params)
         
         latency = time.time() - start_time
         
