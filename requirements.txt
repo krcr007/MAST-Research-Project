@@ -10,11 +10,10 @@ uvicorn
 langchain
 langchain-community
 langchain-groq
-response
-thread
-asyncio
 google-genai
 huggingface_hub
 langchain-huggingface
 transformers
 accelerate
+litellm
+python-dotenv
