@@ -102,6 +102,13 @@ class ModelConfig:
 # 5. Model Configurations
 # ==========================================
 
+GEMINI_MODELS = [
+    "gemini/gemini-3.6-flash",
+    "gemini/gemini-2.5-flash-preview-05-20",
+    "gemini/gemini-2.0-flash",
+    "gemini/gemini-1.5-flash",
+]
+
 MODEL_CONFIGS: List[ModelConfig] = [
     ModelConfig(
         provider="gemini",
@@ -139,52 +146,49 @@ async def query_single_model(
         LLMResponse object containing the model's response or error
     """
     start_time = time.time()
-    
-    try:
-        logger.info(f"Querying {model_config.provider} - {model_config.model}")
-        
-        # Set environment variable for LiteLLM
-        os.environ[model_config.api_key_env_var] = os.getenv(model_config.api_key_env_var)
-        
-        # Make async completion call using LiteLLM
-        # For local LiteLLM proxy, use the configured api_base
-        completion_params = {
-            "model": model_config.model,
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": temperature,
-            "max_tokens": max_tokens,
-        }
-        
-        
-        response = await acompletion(**completion_params)
-        
-        latency = time.time() - start_time
-        
-        # Extract response text
-        response_text = response["choices"][0]["message"]["content"]
-        
-        logger.info(f"✅ {model_config.provider} - {model_config.model} completed in {latency:.2f}s")
-        
-        return LLMResponse(
-            provider=model_config.provider,
-            model=model_config.model,
-            response=response_text,
-            latency_sec=latency,
-            status="success"
-        )
-        
-    except Exception as e:
-        latency = time.time() - start_time
-        error_msg = f"{type(e).__name__}: {str(e)}"
-        logger.error(f"❌ {model_config.provider} - {model_config.model} failed: {error_msg}")
-        
-        return LLMResponse(
-            provider=model_config.provider,
-            model=model_config.model,
-            error=error_msg,
-            latency_sec=latency,
-            status="failed"
-        )
+    models_to_try = GEMINI_MODELS if model_config.provider == "gemini" else [model_config.model]
+    last_error = None
+
+    for model_name in models_to_try:
+        try:
+            logger.info(f"Querying {model_config.provider} - {model_name}")
+            os.environ[model_config.api_key_env_var] = os.getenv(model_config.api_key_env_var)
+
+            completion_params = {
+                "model": model_name,
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": max_tokens,
+            }
+            if model_config.provider != "gemini":
+                completion_params["temperature"] = temperature
+
+            response = await acompletion(**completion_params)
+            latency = time.time() - start_time
+            response_text = response["choices"][0]["message"]["content"]
+            logger.info(f"✅ {model_config.provider} - {model_name} completed in {latency:.2f}s")
+
+            return LLMResponse(
+                provider=model_config.provider,
+                model=model_name,
+                response=response_text,
+                latency_sec=latency,
+                status="success"
+            )
+
+        except Exception as e:
+            last_error = f"{type(e).__name__}: {str(e)}"
+            logger.warning(f"⚠️ {model_name} failed, trying fallback... ({type(e).__name__})")
+            continue
+
+    latency = time.time() - start_time
+    logger.error(f"❌ All models failed for provider {model_config.provider}")
+    return LLMResponse(
+        provider=model_config.provider,
+        model=model_config.model,
+        error=last_error,
+        latency_sec=latency,
+        status="failed"
+    )
 
 
 async def parallel_model_ingestion(
