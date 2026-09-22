@@ -105,8 +105,7 @@ class ModelConfig:
 GEMINI_MODELS = [
     "gemini/gemini-3.6-flash",
     "gemini/gemini-2.5-flash-preview-05-20",
-    "gemini/gemini-2.0-flash",
-    "gemini/gemini-1.5-flash",
+    "openrouter/qwen/qwen3.8-flash",
 ]
 
 MODEL_CONFIGS: List[ModelConfig] = [

@@ -43,8 +43,8 @@ if not OPENROUTER_API_KEY and not GEMINI_API_KEY:
 
 EXTRACTION_MODELS_FALLBACK = [
     "gemini/gemini-3.6-flash",
+    "openrouter/qwen/qwen3.8-flash",
     "gemini/gemini-2.5-flash-preview-05-20",
-    "gemini/gemini-2.0-flash",
     "gemini/gemini-1.5-flash",
 ]
 
@@ -172,7 +172,7 @@ class AtomicPropositionExtractor:
                         ],
                         "max_tokens": 4096,
                     }
-                    if "gemini" not in model_name:
+                    if "openrouter" in model_name:
                         params["temperature"] = 0.0
                         params["response_format"] = {"type": "json_object"}
 
