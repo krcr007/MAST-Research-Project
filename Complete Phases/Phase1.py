@@ -41,8 +41,9 @@ load_dotenv(env_path)
 # 2. Read API keys
 # ==========================================
 
-HF_API_KEY = os.getenv("HF_API_KEY")
-LITELLM_API_BASE = os.getenv("LITELLM_API_BASE", "http://localhost:4000")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 
 # ==========================================
@@ -56,19 +57,18 @@ print("=" * 60)
 print(f".env path: {env_path}")
 
 print(
-    "Hugging Face API Key:",
-    "FOUND" if HF_API_KEY else "NOT FOUND"
+    "Gemini API Key:",
+    "FOUND" if GEMINI_API_KEY else "NOT FOUND"
 )
-
 print(
-    "LiteLLM API Base:",
-    LITELLM_API_BASE
+    "OpenRouter API Key:",
+    "FOUND" if OPENROUTER_API_KEY else "NOT FOUND"
 )
 
 print("=" * 60)
 
 
-if not HF_API_KEY:
+if not GEMINI_API_KEY or not OPENROUTER_API_KEY:
     print("❌ One or more API keys are missing.")
     sys.exit(1)
 
@@ -104,14 +104,14 @@ class ModelConfig:
 
 MODEL_CONFIGS: List[ModelConfig] = [
     ModelConfig(
-        provider="huggingface",
-        model="huggingface/Qwen/Qwen2.5-72B-Instruct",
-        api_key_env_var="HF_API_KEY"
+        provider="gemini",
+        model="gemini/gemini-3.6-flash",
+        api_key_env_var="GEMINI_API_KEY"
     ),
     ModelConfig(
-        provider="huggingface",
-        model="huggingface/meta-llama/Meta-Llama-3.1-70B-Instruct",
-        api_key_env_var="HF_API_KEY"
+        provider="openrouter",
+        model="openrouter/qwen/qwen3.8-flash",
+        api_key_env_var="OPENROUTER_API_KEY"
     ),
 ]
 
@@ -155,10 +155,6 @@ async def query_single_model(
             "max_tokens": max_tokens,
         }
         
-        # Add api_base if configured (for local LiteLLM proxy)
-        # Only use api_base if it's not localhost (to use direct API calls)
-        if LITELLM_API_BASE and not LITELLM_API_BASE.startswith("http://localhost"):
-            completion_params["api_base"] = LITELLM_API_BASE
         
         response = await acompletion(**completion_params)
         
