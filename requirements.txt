@@ -1,3 +1,4 @@
+pydantic
 pandas
 numpy
 matplotlib
@@ -17,3 +18,5 @@ transformers
 accelerate
 litellm
 python-dotenv
+httpx
+tavily-python
